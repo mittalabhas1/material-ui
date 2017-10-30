@@ -161,6 +161,10 @@ class AutoComplete extends Component {
      */
     popoverProps: PropTypes.object,
     /**
+     * Function that returns template to render drop down options
+     */
+    searchTemplate: PropTypes.func,
+    /**
      * Text being input to auto complete.
      */
     searchText: PropTypes.string,
@@ -200,6 +204,11 @@ class AutoComplete extends Component {
       vertical: 'top',
       horizontal: 'left',
     },
+    searchTemplate: (props, item) => ( // eslint-disable-line no-unused-vars
+      <MenuItem
+        {...props}
+      />
+    ),
   };
 
   static contextTypes = {
@@ -426,6 +435,7 @@ class AutoComplete extends Component {
       onUpdateInput, // eslint-disable-line no-unused-vars
       openOnFocus, // eslint-disable-line no-unused-vars
       popoverProps,
+      searchTemplate,
       searchText: searchTextProp, // eslint-disable-line no-unused-vars
       ...other
     } = this.props;
@@ -483,13 +493,12 @@ class AutoComplete extends Component {
             } else {
               requestsList.push({
                 text: itemText,
-                value: (
-                  <MenuItem
-                    innerDivStyle={styles.innerDiv}
-                    primaryText={itemText}
-                    disableFocusRipple={disableFocusRipple}
-                    key={index}
-                  />),
+                value: searchTemplate({
+                  innerDivStyle: styles.innerDiv,
+                  primaryText: itemText,
+                  disableFocusRipple: disableFocusRipple,
+                  key: index,
+                }, item),
               });
             }
           }
